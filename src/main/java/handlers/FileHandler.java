@@ -1,6 +1,7 @@
 package handlers;
 
 import dataObjs.Folder;
+import utilFunctions.Logging;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -27,6 +28,7 @@ public class FileHandler {
                 return folder;
             }
         }
+        Logging.log("Could not update folder " + id, Logging.LogLevel.error);
         return null;
     }
 
