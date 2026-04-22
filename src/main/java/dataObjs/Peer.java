@@ -1,15 +1,17 @@
 package dataObjs;
 
+import java.util.UUID;
+
 public class Peer {
     private String Address;
     private String Name;
-    private String ID;
+    private UUID ID;
     private String Key;
 
-    public Peer(String Address, String Name, String ID, String Key) {
+    public Peer(String Address, String Name, String Key) {
         this.Address = Address;
         this.Name = Name;
-        this.ID = ID;
+        this.ID = UUID.randomUUID();
         this.Key = Key;
     }
 
@@ -21,7 +23,7 @@ public class Peer {
         return Name;
     }
 
-    public String getID(){
+    public UUID getID(){
         return ID;
     }
 
