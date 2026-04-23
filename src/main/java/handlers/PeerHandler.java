@@ -3,16 +3,21 @@ package handlers;
 import dataObjs.Peer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PeerHandler {
-    private ArrayList<Peer> peers = new ArrayList();
+    private List<Peer> peers = Collections.synchronizedList(new ArrayList<>());
+    
 
     public PeerHandler(){
         //todo start broadcast + listner
     }
 
     public ArrayList<Peer> getPeers() {
-        return peers;
+        synchronized(peers) {
+        return new ArrayList<>(peers);
+        }
     }
 
 
