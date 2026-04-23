@@ -1,14 +1,20 @@
 package dataObjs;
 
+import utilFunctions.Logging;
+
 import java.io.File;
+import java.nio.file.Files;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.TimeZone;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Folder {
-    private ArrayList<File> files;
+    private ConcurrentHashMap<String,File> files;
     private String Name;
-    private UUID ID; //Todo why is this here?
+    private UUID ID;
     private String Path;
     private LocalDateTime version;
 
@@ -20,13 +26,36 @@ public class Folder {
 
     }
 
-    private void updateFiles(){
-        //Todo finish function, make it update "files" so that it can see all files in folder
-
-        //Todo update version if it changes.
+    public void updateFiles(){
+        if(files == null){
+            files = new ConcurrentHashMap<>();
+        }
+        files.clear();
+        scanFiles(Path);
+        version = LocalDateTime.ofInstant(Instant.ofEpochMilli(new File(Path).lastModified()),
+                TimeZone.getDefault().toZoneId());
     }
+
+    private void scanFiles(String path){
+        File directory = new File(path);
+
+        String [] directoryContents = directory.list();
+
+        for(String fileName: directoryContents) {
+            File temp = new File(String.valueOf(directory),fileName);
+            if (temp.isDirectory()) {
+                scanFiles(temp.getAbsolutePath());
+            }else if (Files.isSymbolicLink(temp.toPath())) {
+                Logging.log("SymbolicLink not supported", Logging.LogLevel.info);
+                    continue;
+            } else{
+                files.put(temp.getPath(),temp);
+            }
+        }
+    }
+
     public ArrayList<File> getFiles(){
-        return files;
+        return new ArrayList<>(files.values());
     }
     public String getName(){
         return Name;
