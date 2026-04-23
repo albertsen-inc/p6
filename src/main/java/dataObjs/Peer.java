@@ -19,8 +19,16 @@ public class Peer {
         return Address;
     }
 
+    public void setAddress(String Address) {
+        this.Address = Address;
+    }
+
     public String getName(){
         return Name;
+    }
+
+    public void setName(String Name) {
+        this.Name = Name;
     }
 
     public UUID getID(){
