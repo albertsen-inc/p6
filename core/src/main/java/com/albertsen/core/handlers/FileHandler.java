@@ -1,7 +1,7 @@
-package com.albertsen.project6.handlers;
+package com.albertsen.core.handlers;
 
-import com.albertsen.project6.dataObjs.Folder;
-import com.albertsen.project6.utilFunctions.Logging;
+import com.albertsen.core.dataObjs.Folder;
+import com.albertsen.core.utilFunctions.Logging;
 
 import java.util.ArrayList;
 import java.util.UUID;

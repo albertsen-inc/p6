@@ -1,6 +1,6 @@
-package com.albertsen.project6.dataObjs;
+package com.albertsen.core.dataObjs;
 
-import com.albertsen.project6.utilFunctions.Logging;
+import com.albertsen.core.utilFunctions.Logging;
 
 import java.io.File;
 import java.nio.file.Files;

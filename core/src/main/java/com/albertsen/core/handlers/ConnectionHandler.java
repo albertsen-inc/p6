@@ -1,7 +1,7 @@
-package com.albertsen.project6.handlers;
+package com.albertsen.core.handlers;
 
-import com.albertsen.project6.dataObjs.Connection;
-import com.albertsen.project6.dataObjs.Peer;
+import com.albertsen.core.dataObjs.Connection;
+import com.albertsen.core.dataObjs.Peer;
 
 import java.util.ArrayList;
 
