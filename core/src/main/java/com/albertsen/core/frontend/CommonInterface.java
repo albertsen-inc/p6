@@ -1,7 +1,7 @@
-package com.albertsen.project6.frontend;
+package com.albertsen.core.frontend;
 
 
-import com.albertsen.project6.run.OurMain;
+import com.albertsen.core.run.OurMain;
 
 public class CommonInterface {
 

@@ -1,4 +1,4 @@
-package com.albertsen.project6.utilFunctions;
+package com.albertsen.core.utilFunctions;
 
 import java.io.File;
 import java.io.FileWriter;

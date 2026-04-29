@@ -4,13 +4,11 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.albertsen.project6.dataObjs.Folder;
-import com.albertsen.project6.run.OurMain;
-import com.albertsen.project6.utilFunctions.Logging;
+import com.albertsen.core.dataObjs.Folder;
+import com.albertsen.core.run.OurMain;
 
 import java.io.File;
 

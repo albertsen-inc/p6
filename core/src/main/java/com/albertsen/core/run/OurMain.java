@@ -1,10 +1,10 @@
-package com.albertsen.project6.run;
+package com.albertsen.core.run;
 
-import com.albertsen.project6.dataObjs.Folder;
-import com.albertsen.project6.dataObjs.Peer;
-import com.albertsen.project6.frontend.CommonInterface;
-import com.albertsen.project6.handlers.ConnectionHandler;
-import com.albertsen.project6.handlers.FileHandler;
+import com.albertsen.core.dataObjs.Folder;
+import com.albertsen.core.dataObjs.Peer;
+import com.albertsen.core.frontend.CommonInterface;
+import com.albertsen.core.handlers.ConnectionHandler;
+import com.albertsen.core.handlers.FileHandler;
 
 import java.util.ArrayList;
 import java.util.UUID;

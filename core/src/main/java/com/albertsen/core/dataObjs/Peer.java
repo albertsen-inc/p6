@@ -1,4 +1,4 @@
-package com.albertsen.project6.dataObjs;
+package com.albertsen.core.dataObjs;
 
 import java.util.UUID;
 
