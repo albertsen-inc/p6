@@ -8,10 +8,12 @@ java {
     }
 }
 
+
 dependencies {
     implementation(project(":core"))
+    implementation("info.picocli:picocli:4.7.7")
 }
 
 application {
-    mainClass.set("com.albertsen.cli.Cli")
+    mainClass.set("com.albertsen.cli.Main")
 }
