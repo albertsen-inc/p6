@@ -1,33 +1,42 @@
 package com.albertsen.core.peerdiscovery;
 
+import com.albertsen.core.dataObjs.Peer;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.UUID;
 
 public class Broadcast {
 
-    //todo fix datagram packets (username, identifier)
-    //todo way to activate broadcast
-    public void sendMsgBroadcast(String msg) throws IOException {
+    public void sendBroadcast(Peer profile) throws IOException {
+
         DatagramSocket socket = new DatagramSocket();
         socket.setBroadcast(true);
+
+        //some is temp but need to be created in profile
+        String type = "DISCOVER";
+        String name = sanitize(profile.getName());
+        String id = profile.getID().toString();
+        long timestamp = System.currentTimeMillis();
+        String nonce = UUID.randomUUID().toString();
+
+        String msg = type + "|" + name + "|" + id + "|" + timestamp + "|" + nonce;
         byte[] buffer = msg.getBytes();
 
-        //get all interfaces (wifi,eathernet ...)
+
+
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 
-
         while (interfaces.hasMoreElements()) {
-            NetworkInterface temp = interfaces.nextElement();
-            //skip useless
-            if (!temp.isUp() || temp.isLoopback()) continue;
+            NetworkInterface ni = interfaces.nextElement();
 
-            //get adress for interface and check if broadcast is allowed ipv6 dont have for example.
-            for (InterfaceAddress ia : temp.getInterfaceAddresses()) {
-                InetAddress broadcast = ia.getBroadcast(); //ip with 255 at end
+            if (!ni.isUp() || ni.isLoopback()) continue;
+
+            for (InterfaceAddress ia : ni.getInterfaceAddresses()) {
+                InetAddress broadcast = ia.getBroadcast();
                 if (broadcast == null) continue;
 
-                //create UDP packet
                 DatagramPacket packet = new DatagramPacket(
                         buffer,
                         buffer.length,
@@ -36,10 +45,14 @@ public class Broadcast {
                 );
 
                 socket.send(packet);
-                System.out.println("Sent to: " + broadcast.getHostAddress());
             }
         }
+
         socket.close();
+    }
+
+    private String sanitize(String input) {
+        return input.replace("|", "_");
     }
 
 
