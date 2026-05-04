@@ -8,11 +8,18 @@ public class Peer {
     private UUID ID;
     private String Key;
 
-    public Peer(String Address, String Name, String Key) {
+    public Peer(String Address, String Name) {
         this.Address = Address;
         this.Name = Name;
         this.ID = UUID.randomUUID();
-        this.Key = Key;
+    }
+
+    public void setKey(String key){
+        this.Key = key;
+    }
+
+    public String getKey(){
+        return Key;
     }
 
     public String getAddress() {
