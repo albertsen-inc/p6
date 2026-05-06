@@ -16,8 +16,16 @@ public class PeerHandler {
 
     public ArrayList<Peer> getPeers() {
         synchronized(peers) {
-        return new ArrayList<>(peers);
+            return new ArrayList<>(peers);
         }
+    }
+
+    public void addPeer(Peer peer) {
+        peers.add(peer);
+    }
+
+    public void removePeer(Peer peer) {
+        peers.remove(peer);
     }
 
 

@@ -8,16 +8,18 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.albertsen.project6.data.Device;
+import com.albertsen.core.dataObjs.Peer;
+import com.albertsen.project6.R;
 
 public class DeviceCardView extends LinearLayout {
 
-    private final Device device;
+    private final Peer peer;
 
-    public DeviceCardView(Context context, Device device, Runnable onRemoveClick) {
+    public DeviceCardView(Context context, Peer peer, Runnable onRemoveClick) {
         super(context);
 
-        this.device = device;
+        this.peer = peer;
+// ... (omitting some unchanged lines for brevity in thought, but tool call needs targetContent match)
 
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER_VERTICAL);
@@ -35,8 +37,8 @@ public class DeviceCardView extends LinearLayout {
         addView(createRemoveButton(context, onRemoveClick));
     }
 
-    public Device getDevice() {
-        return device;
+    public Peer getPeer() {
+        return peer;
     }
 
     private LinearLayout createTextArea(Context context) {
@@ -51,18 +53,18 @@ public class DeviceCardView extends LinearLayout {
         textArea.setLayoutParams(textAreaParams);
 
         TextView name = new TextView(context);
-        name.setText(device.getName());
+        name.setText(peer.getName());
         name.setTextColor(Color.WHITE);
         name.setTextSize(17);
         name.setTypeface(Typeface.DEFAULT_BOLD);
 
         TextView ip = new TextView(context);
-        ip.setText(device.getIpAddress());
+        ip.setText(peer.getAddress());
         ip.setTextColor(Color.WHITE);
         ip.setTextSize(15);
 
         TextView id = new TextView(context);
-        id.setText("ID: " + device.getId());
+        id.setText(context.getString(R.string.peer_id_format, peer.getID().toString()));
         id.setTextColor(Color.WHITE);
         id.setTextSize(14);
 
@@ -75,7 +77,7 @@ public class DeviceCardView extends LinearLayout {
 
     private Button createRemoveButton(Context context, Runnable onRemoveClick) {
         Button button = new Button(context);
-        button.setText("×");
+        button.setText(R.string.remove_button_text);
         button.setTextSize(24);
         button.setTextColor(Color.WHITE);
         button.setAllCaps(false);

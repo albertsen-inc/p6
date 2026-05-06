@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">project6</string>
+    <string name="app_name">File Share</string>
+    <string name="title_name">File Share</string>
+    <string name="subtitle_name">Share files across devices</string>
+    <string name="button_find_connect_text">Find &amp; Connect Devices</string>
+    <string name="button_file_manager_text">Open File Manager</string>
+    <string name="connected_devices_format">Connected Devices (%1$d)</string>
+    <string name="send_files_format">➤   Send Files (%1$d)</string>
+    <string name="peer_id_format">ID: %1$s</string>
+    <string name="remove_button_text">×</string>
 </resources>

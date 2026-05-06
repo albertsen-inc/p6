@@ -9,7 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.albertsen.project6.data.Device;
+import com.albertsen.core.dataObjs.Peer;
+import com.albertsen.project6.R;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public class MainScreenView extends ScrollView {
 
     private int selectedFileCount = 0;
 
-    private final ArrayList<Device> connectedDevices = new ArrayList<>();
+    private final ArrayList<Peer> connectedDevices = new ArrayList<>();
 
     public MainScreenView(Context context) {
         super(context);
@@ -63,13 +64,13 @@ public class MainScreenView extends ScrollView {
         header.setLayoutParams(headerParams);
 
         TextView title = new TextView(context);
-        title.setText("Device Share");
+        title.setText(R.string.title_name);
         title.setTextColor(Color.WHITE);
         title.setTextSize(24);
         title.setTypeface(Typeface.DEFAULT_BOLD);
 
         TextView subtitle = new TextView(context);
-        subtitle.setText("Share files across devices");
+        subtitle.setText(R.string.subtitle_name);
         subtitle.setTextColor(Color.WHITE);
         subtitle.setTextSize(16);
 
@@ -94,7 +95,7 @@ public class MainScreenView extends ScrollView {
 
     private Button createFindDevicesButton() {
         Button button = new Button(context);
-        button.setText("⌁   Find & Connect Devices");
+        button.setText(R.string.button_find_connect_text);
         button.setTextSize(18);
         button.setTypeface(Typeface.DEFAULT_BOLD);
         button.setTextColor(Color.WHITE);
@@ -155,7 +156,7 @@ public class MainScreenView extends ScrollView {
 
     private Button createOpenFileManagerButton() {
         Button button = new Button(context);
-        button.setText("▰   Open File Manager");
+        button.setText(R.string.button_file_manager_text);
         button.setTextSize(18);
         button.setTypeface(Typeface.DEFAULT_BOLD);
         button.setTextColor(Color.WHITE);
@@ -201,25 +202,25 @@ public class MainScreenView extends ScrollView {
         return sendFilesButton;
     }
 
-    public void addDevice(Device device) {
-        if (isDeviceAlreadyConnected(device)) {
+    public void addDevice(Peer peer) {
+        if (isDeviceAlreadyConnected(peer)) {
             return;
         }
 
-        connectedDevices.add(device);
+        connectedDevices.add(peer);
 
         DeviceCardView deviceCardView = new DeviceCardView(
                 context,
-                device,
-                () -> removeDevice(device)
+                peer,
+                () -> removeDevice(peer)
         );
 
         connectedDevicesContainer.addView(deviceCardView);
         updateConnectedDevicesTitle();
     }
 
-    public void removeDevice(Device device) {
-        connectedDevices.remove(device);
+    public void removeDevice(Peer peer) {
+        connectedDevices.remove(peer);
         redrawDeviceCards();
         updateConnectedDevicesTitle();
     }
@@ -227,20 +228,20 @@ public class MainScreenView extends ScrollView {
     private void redrawDeviceCards() {
         connectedDevicesContainer.removeAllViews();
 
-        for (Device device : connectedDevices) {
+        for (Peer peer : connectedDevices) {
             DeviceCardView deviceCardView = new DeviceCardView(
                     context,
-                    device,
-                    () -> removeDevice(device)
+                    peer,
+                    () -> removeDevice(peer)
             );
 
             connectedDevicesContainer.addView(deviceCardView);
         }
     }
 
-    private boolean isDeviceAlreadyConnected(Device newDevice) {
-        for (Device device : connectedDevices) {
-            if (device.getId().equals(newDevice.getId())) {
+    private boolean isDeviceAlreadyConnected(Peer newPeer) {
+        for (Peer peer : connectedDevices) {
+            if (peer.getID().equals(newPeer.getID())) {
                 return true;
             }
         }
@@ -255,12 +256,12 @@ public class MainScreenView extends ScrollView {
 
     private void updateConnectedDevicesTitle() {
         connectedDevicesTitle.setText(
-                "Connected Devices (" + connectedDevices.size() + ")"
+                context.getString(R.string.connected_devices_format, connectedDevices.size())
         );
     }
 
     private void updateSendFilesButton() {
-        sendFilesButton.setText("➤   Send Files (" + selectedFileCount + ")");
+        sendFilesButton.setText(context.getString(R.string.send_files_format, selectedFileCount));
 
         if (selectedFileCount > 0) {
             sendFilesButton.setEnabled(true);

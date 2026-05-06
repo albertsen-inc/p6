@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.albertsen.core.dataObjs.Folder;
 import com.albertsen.core.run.OurMain;
-import com.albertsen.project6.data.Device;
+import com.albertsen.core.dataObjs.Peer;
 import com.albertsen.project6.helpers.FileSetupHelper;
 import com.albertsen.project6.ui.MainScreenView;
 
@@ -40,16 +40,16 @@ public class MainActivity extends AppCompatActivity {
         mainScreenView.setOnFindDevicesClick(() -> {
             // Mock devices for now.
             // Later replace this with real discovery logic.
-            mainScreenView.addDevice(new Device(
-                    "Living Room TV",
+            mainScreenView.addDevice(new Peer(
                     "192.168.1.101",
-                    "dev-001"
+                    "Living Room TV",
+                    "mock-key-1"
             ));
 
-            mainScreenView.addDevice(new Device(
-                    "Office Desktop",
+            mainScreenView.addDevice(new Peer(
                     "192.168.1.102",
-                    "dev-002"
+                    "Office Desktop",
+                    "mock-key-2"
             ));
         });
 
@@ -65,16 +65,16 @@ public class MainActivity extends AppCompatActivity {
             // ourMain.sendFiles(selectedFiles);
         });
 
-        mainScreenView.addDevice(new Device(
-                "Living Room TV",
+        mainScreenView.addDevice(new Peer(
                 "192.168.1.101",
-                "dev-001"
+                "Living Room TV",
+                "mock-key-1"
         ));
 
-        mainScreenView.addDevice(new Device(
-                "Office Desktop",
+        mainScreenView.addDevice(new Peer(
                 "192.168.1.102",
-                "dev-002"
+                "Office Desktop",
+                "mock-key-2"
         ));
 
         setContentView(mainScreenView);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-
+        //TODO need to be fixed
         startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
     }
 
