@@ -1,9 +1,10 @@
 package com.albertsen.project6;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.albertsen.core.dataObjs.Folder;
@@ -17,12 +18,21 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int FILE_PICKER_REQUEST_CODE = 100;
-
     private OurMain ourMain;
     private MainScreenView mainScreenView;
 
     private final ArrayList<Uri> selectedFiles = new ArrayList<>();
+
+    private final ActivityResultLauncher<String[]> filePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.OpenMultipleDocuments(),
+            uris -> {
+                selectedFiles.clear();
+                if (uris != null) {
+                    selectedFiles.addAll(uris);
+                }
+                mainScreenView.setSelectedFileCount(selectedFiles.size());
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,40 +91,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openAndroidFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        //TODO need to be fixed
-        startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode != FILE_PICKER_REQUEST_CODE) {
-            return;
-        }
-
-        if (resultCode != RESULT_OK || data == null) {
-            return;
-        }
-
-        selectedFiles.clear();
-
-        if (data.getClipData() != null) {
-            int fileCount = data.getClipData().getItemCount();
-
-            for (int i = 0; i < fileCount; i++) {
-                Uri uri = data.getClipData().getItemAt(i).getUri();
-                selectedFiles.add(uri);
-            }
-
-        } else if (data.getData() != null) {
-            selectedFiles.add(data.getData());
-        }
-
-        mainScreenView.setSelectedFileCount(selectedFiles.size());
+        filePickerLauncher.launch(new String[]{"*/*"});
     }
 }
