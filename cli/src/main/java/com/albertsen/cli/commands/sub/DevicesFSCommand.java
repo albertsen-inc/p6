@@ -2,7 +2,6 @@ package com.albertsen.cli.commands.sub;
 
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 
 @Command(name = "devices", 
     //aliases = {""},

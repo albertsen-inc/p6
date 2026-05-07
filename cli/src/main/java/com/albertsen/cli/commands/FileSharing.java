@@ -8,7 +8,6 @@ import com.albertsen.cli.commands.sub.NetworkFSCommand;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
 
 @Command(name = "fileSharing", 
     version = "1.0", 
