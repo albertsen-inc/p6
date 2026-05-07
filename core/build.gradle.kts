@@ -9,5 +9,6 @@ java {
 }
 
 dependencies {
-    // put shared dependencies here if needed
+    implementation("org.bouncycastle:bcprov-jdk18on:1.84")
+    implementation("org.bouncycastle:bcpg-jdk18on:1.84")
 }
