@@ -1,4 +1,4 @@
-package com.albertsen.core.dataObjs;
+package dataObjs;
 
 import java.util.UUID;
 
@@ -8,18 +8,11 @@ public class Peer {
     private UUID ID;
     private String Key;
 
-    public Peer(String Address, String Name) {
+    public Peer(String Address, String Name, String Key) {
         this.Address = Address;
         this.Name = Name;
         this.ID = UUID.randomUUID();
-    }
-
-    public void setKey(String key){
-        this.Key = key;
-    }
-
-    public String getKey(){
-        return Key;
+        this.Key = Key;
     }
 
     public String getAddress() {
