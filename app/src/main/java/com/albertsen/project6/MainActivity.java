@@ -1,21 +1,38 @@
 package com.albertsen.project6;
 
+import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.albertsen.core.dataObjs.Folder;
 import com.albertsen.core.run.OurMain;
+import com.albertsen.core.dataObjs.Peer;
+import com.albertsen.project6.helpers.FileSetupHelper;
+import com.albertsen.project6.ui.MainScreenView;
 
 import java.io.File;
+import java.util.ArrayList;
 
-//STARTS IT ALL ON ANDROID
 public class MainActivity extends AppCompatActivity {
 
     private OurMain ourMain;
+    private MainScreenView mainScreenView;
+
+    private final ArrayList<Uri> selectedFiles = new ArrayList<>();
+
+    private final ActivityResultLauncher<String[]> filePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.OpenMultipleDocuments(),
+            uris -> {
+                selectedFiles.clear();
+                if (uris != null) {
+                    selectedFiles.addAll(uris);
+                }
+                mainScreenView.setSelectedFileCount(selectedFiles.size());
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,89 +40,57 @@ public class MainActivity extends AppCompatActivity {
 
         ourMain = new OurMain();
 
-        //makes sure there is a folder (external memory, meaning only app can acces still but more space and permanent until app is uninstalled)
-        File newfolder = new File(getExternalFilesDir(null), "StartFolder");
+        File startFolder = FileSetupHelper.createStartFolder(this);
+        FileSetupHelper.createTestFiles(startFolder);
 
-        if (!newfolder.exists()) {
-            boolean created = newfolder.mkdir();
-        }
+        ourMain.addFolder(new Folder("StartFolder", startFolder.getAbsolutePath()));
 
-        //adds the folder to our active program
-        String path = newfolder.getAbsolutePath();
+        mainScreenView = new MainScreenView(this);
 
-        ourMain.addFolder(new Folder("StartFolder",path));
+        mainScreenView.setOnFindDevicesClick(() -> {
+            // Mock devices for now.
+            // Later replace this with real discovery logic.
+            mainScreenView.addDevice(new Peer(
+                    "192.168.1.101",
+                    "Living Room TV",
+                    "mock-key-1"
+            ));
 
+            mainScreenView.addDevice(new Peer(
+                    "192.168.1.102",
+                    "Office Desktop",
+                    "mock-key-2"
+            ));
+        });
 
-        //empty txt files to have some testing for display
-        try {
-            File file1 = new File(newfolder, "file1.txt");
-            if (!file1.exists()) {
-                file1.createNewFile();
-            }
+        mainScreenView.setOnOpenFileManagerClick(this::openAndroidFilePicker);
 
-            File file2 = new File(newfolder, "file2.txt");
-            if (!file2.exists()) {
-                file2.createNewFile();
-            }
-
-            File file3 = new File(newfolder, "notes.txt");
-            if (!file3.exists()) {
-                file3.createNewFile();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        //sets up a layout
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        //space between all things
-        layout.setPadding(50, 50, 50, 50);
-
-        //button made
-        Button button = new Button(this);
-        button.setText("Load Files");
-
-        //text list made
-        TextView textView = new TextView(this);
-
-        //make the button not be in the top since then in middle of camera
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-
-        params.setMargins(0, 200, 0, 0); // left, top, right, bottom
-
-        button.setLayoutParams(params);
-
-        //button listner
-        button.setOnClickListener(v -> {
-
-            if (ourMain.getFolders() == null || ourMain.getFolders().isEmpty()) {
-                textView.setText("No folders found");
+        mainScreenView.setOnSendFilesClick(() -> {
+            if (selectedFiles.isEmpty()) {
                 return;
             }
 
-            StringBuilder sb = new StringBuilder();
-
-            for (Folder folder : ourMain.getFolders()) {
-                for (File file : folder.getFiles()) {
-                    sb.append(file.getName()).append("\n");
-                }
-            }
-
-            textView.setText(sb.toString());
+            // Later connect this to your real send logic.
+            // Example:
+            // ourMain.sendFiles(selectedFiles);
         });
 
-        //add to layout
-        layout.addView(button);
-        layout.addView(textView);
+        mainScreenView.addDevice(new Peer(
+                "192.168.1.101",
+                "Living Room TV",
+                "mock-key-1"
+        ));
 
-        //show layout on screen
-        setContentView(layout);
+        mainScreenView.addDevice(new Peer(
+                "192.168.1.102",
+                "Office Desktop",
+                "mock-key-2"
+        ));
+
+        setContentView(mainScreenView);
+    }
+
+    private void openAndroidFilePicker() {
+        filePickerLauncher.launch(new String[]{"*/*"});
     }
 }
