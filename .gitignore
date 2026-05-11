@@ -6,6 +6,7 @@ build/
 *.iml
 .idea/**
 .idea/
+.idea
 !.idea/codeStyles/
 !.idea/copyright/
 !.idea/inspectionProfiles/
