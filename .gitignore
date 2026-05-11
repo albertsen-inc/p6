@@ -4,6 +4,7 @@ build/
 
 # IntelliJ IDEA / Android Studio
 *.iml
+.idea/**
 .idea/
 !.idea/codeStyles/
 !.idea/copyright/
