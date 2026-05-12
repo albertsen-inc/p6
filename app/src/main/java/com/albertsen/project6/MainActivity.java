@@ -8,18 +8,25 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.albertsen.core.dataObjs.Folder;
+import com.albertsen.core.handlers.PeerHandler;
 import com.albertsen.core.run.OurMain;
 import com.albertsen.core.dataObjs.Peer;
+import com.albertsen.core.utilFunctions.Logging;
 import com.albertsen.project6.helpers.FileSetupHelper;
+import com.albertsen.project6.ui.ConnectScreenView;
 import com.albertsen.project6.ui.MainScreenView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private OurMain ourMain;
     private MainScreenView mainScreenView;
+    private ConnectScreenView connectScreenView;
+
+    private PeerHandler peerHandler;
 
     private final ArrayList<Uri> selectedFiles = new ArrayList<>();
 
@@ -44,23 +51,37 @@ public class MainActivity extends AppCompatActivity {
         FileSetupHelper.createTestFiles(startFolder);
 
         ourMain.addFolder(new Folder("StartFolder", startFolder.getAbsolutePath()));
+        peerHandler = new PeerHandler();
 
+        peerHandler.init("per", new PeerHandler.InitCallback() {
+            @Override
+            public void onSuccess(Peer profile) {
+                runOnUiThread(() -> {
+                    initMainScreen();
+                    initConnectScreen();
+
+                    setContentView(mainScreenView);
+                });
+
+                try {
+                    peerHandler.startListner();
+                } catch (IOException e) {
+                    Logging.log("Failed to start listener", Logging.LogLevel.error);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Logging.log("failed to init peer handler", Logging.LogLevel.error);
+            }
+        });
+    }
+
+    private void initMainScreen() {
         mainScreenView = new MainScreenView(this);
 
         mainScreenView.setOnFindDevicesClick(() -> {
-            // Mock devices for now.
-            // Later replace this with real discovery logic.
-            mainScreenView.addDevice(new Peer(
-                    "192.168.1.101",
-                    "Living Room TV",
-                    "mock-key-1"
-            ));
-
-            mainScreenView.addDevice(new Peer(
-                    "192.168.1.102",
-                    "Office Desktop",
-                    "mock-key-2"
-            ));
+            setContentView(connectScreenView);
         });
 
         mainScreenView.setOnOpenFileManagerClick(this::openAndroidFilePicker);
@@ -69,25 +90,33 @@ public class MainActivity extends AppCompatActivity {
             if (selectedFiles.isEmpty()) {
                 return;
             }
-
-            // Later connect this to your real send logic.
-            // Example:
-            // ourMain.sendFiles(selectedFiles);
+            // Real send logic later
         });
 
-        mainScreenView.addDevice(new Peer(
-                "192.168.1.101",
-                "Living Room TV",
-                "mock-key-1"
-        ));
+        // Some initial connected devices as mocks
+        mainScreenView.addDevice(new Peer("192.168.1.101", "Living Room TV"));
+        mainScreenView.addDevice(new Peer("192.168.1.102", "Office Desktop"));
+    }
 
-        mainScreenView.addDevice(new Peer(
-                "192.168.1.102",
-                "Office Desktop",
-                "mock-key-2"
-        ));
+    private void initConnectScreen() {
+        connectScreenView = new ConnectScreenView(this);
 
-        setContentView(mainScreenView);
+        connectScreenView.setOnBackClick(() -> {
+            setContentView(mainScreenView);
+        });
+
+        connectScreenView.setOnScanClick(() -> {
+            // Mock discovery
+            connectScreenView.addAvailableDevice(new Peer("192.168.1.103", "Kitchen Tablet"));
+            connectScreenView.addAvailableDevice(new Peer("192.168.1.104", "Bedroom Speaker"));
+            connectScreenView.addAvailableDevice(new Peer("192.168.1.105", "Jane's Laptop"));
+            connectScreenView.addAvailableDevice(new Peer("192.168.1.106", "Gaming Console"));
+        });
+
+        connectScreenView.setOnDeviceConnectListener(peer -> {
+            mainScreenView.addDevice(peer);
+            setContentView(mainScreenView);
+        });
     }
 
     private void openAndroidFilePicker() {
