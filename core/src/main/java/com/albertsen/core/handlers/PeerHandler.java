@@ -11,19 +11,16 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
 
 public class PeerHandler {
     private final List<Peer> peers = Collections.synchronizedList(new ArrayList<>());
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Peer profile;
     private Listner listner;
     private Broadcast broadcast;
 
 
     public void init(String userName, InitCallback callback){
-        executorService.execute(() -> {
+        Thread tempRun = new Thread(() -> {
             try {
                 String hostAddress = InetAddress.getLocalHost().getHostAddress();
                 profile = new Peer(hostAddress, userName);
@@ -41,10 +38,11 @@ public class PeerHandler {
                 if (callback != null) {
                     callback.onError(e);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-
         });
+        tempRun.start();
     }
 
     public ArrayList<Peer> getPeers() {
@@ -86,10 +84,6 @@ public class PeerHandler {
         }
 
         return profile;
-    }
-
-    public void shutdownExecutor(){
-        executorService.shutdown();
     }
 
     public interface InitCallback {
