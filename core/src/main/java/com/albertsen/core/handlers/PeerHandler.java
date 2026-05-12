@@ -17,23 +17,49 @@ public class PeerHandler {
     private Peer profile;
     private Listner listner;
     private Broadcast broadcast;
-    
 
-    public PeerHandler(){
-        //todo start broadcast + listner
-        makeProfile("per");
-        listner = new Listner(this);
-        broadcast = new Broadcast();
+
+    public void init(String userName, InitCallback callback){
+        Thread tempRun = new Thread(() -> {
+            try {
+                String hostAddress = InetAddress.getLocalHost().getHostAddress();
+                profile = new Peer(hostAddress, userName);
+
+                listner = new Listner(this);
+                broadcast = new Broadcast();
+
+                Logging.log("Profile created", Logging.LogLevel.info);
+
+                if (callback != null) {
+                    callback.onSuccess(profile);
+                }
+            } catch (UnknownHostException e) {
+                Logging.log("Failed to make profile", Logging.LogLevel.error);
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        tempRun.start();
     }
+
     public ArrayList<Peer> getPeers() {
-        synchronized(peers) {
-        return new ArrayList<>(peers);
+        synchronized (peers) {
+            return new ArrayList<>(peers);
         }
     }
 
-    public void addPeer(Peer peerToBeAdded){
-        synchronized (peers){
+    public void addPeer(Peer peerToBeAdded) {
+        synchronized (peers) {
             peers.add(peerToBeAdded);
+        }
+    }
+
+    public void removePeer(Peer peer) {
+        synchronized (peers) {
+            peers.remove(peer);
         }
     }
 
@@ -41,35 +67,27 @@ public class PeerHandler {
         broadcast.sendBroadcast(getProfile());
     }
 
-
     public void startListner() throws IOException {
-        if(profile!=null){
+        if (profile != null) {
             listner.startListner();
         }
     }
 
-    public void stopLisnter(){
+    public void stopLisnter() {
         listner.stopLisnter();
     }
 
-
-    public void makeProfile(String name) {
-        try {
-            String hostAddress = InetAddress.getLocalHost().getHostAddress();
-            profile = new Peer(hostAddress,name);
-        } catch (UnknownHostException e) {
-            Logging.log("Failed to make profile", Logging.LogLevel.error);
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Peer getProfile(){
-        if(profile == null){
+    public Peer getProfile() {
+        if (profile == null) {
             Logging.log("profile dont exsist", Logging.LogLevel.error);
             return null;
         }
+
         return profile;
     }
 
-
+    public interface InitCallback {
+        void onSuccess(Peer profile);
+        void onError(Exception e);
+    }
 }
