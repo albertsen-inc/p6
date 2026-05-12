@@ -8,4 +8,9 @@
     <string name="send_files_format">➤   Send Files (%1$d)</string>
     <string name="peer_id_format">ID: %1$s</string>
     <string name="remove_button_text">×</string>
+    <string name="connect_title">Connect to Device</string>
+    <string name="connect_subtitle">Discover nearby devices</string>
+    <string name="scan_button_text">Scan for Devices</string>
+    <string name="available_devices_format">Available Devices (%1$d)</string>
+    <string name="connect_button_text">Connect</string>
 </resources>

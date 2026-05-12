@@ -11,17 +11,40 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 public class PeerHandler {
     private final List<Peer> peers = Collections.synchronizedList(new ArrayList<>());
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Peer profile;
     private Listner listner;
     private Broadcast broadcast;
 
-    public PeerHandler() {
-        makeProfile("per");
-        listner = new Listner(this);
-        broadcast = new Broadcast();
+
+    public void init(String userName, InitCallback callback){
+        executorService.execute(() -> {
+            try {
+                String hostAddress = InetAddress.getLocalHost().getHostAddress();
+                profile = new Peer(hostAddress, userName);
+
+                listner = new Listner(this);
+                broadcast = new Broadcast();
+
+                Logging.log("Profile created", Logging.LogLevel.info);
+
+                if (callback != null) {
+                    callback.onSuccess(profile);
+                }
+            } catch (UnknownHostException e) {
+                Logging.log("Failed to make profile", Logging.LogLevel.error);
+                if (callback != null) {
+                    callback.onError(e);
+                }
+            }
+
+
+        });
     }
 
     public ArrayList<Peer> getPeers() {
@@ -56,16 +79,6 @@ public class PeerHandler {
         listner.stopLisnter();
     }
 
-    public void makeProfile(String name) {
-        try {
-            String hostAddress = InetAddress.getLocalHost().getHostAddress();
-            profile = new Peer(hostAddress, name);
-        } catch (UnknownHostException e) {
-            Logging.log("Failed to make profile", Logging.LogLevel.error);
-            throw new RuntimeException(e);
-        }
-    }
-
     public Peer getProfile() {
         if (profile == null) {
             Logging.log("profile dont exsist", Logging.LogLevel.error);
@@ -73,5 +86,14 @@ public class PeerHandler {
         }
 
         return profile;
+    }
+
+    public void shutdownExecutor(){
+        executorService.shutdown();
+    }
+
+    public interface InitCallback {
+        void onSuccess(Peer profile);
+        void onError(Exception e);
     }
 }
