@@ -8,27 +8,8 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 
-public class Authenicate {
+public class Authenticate {
     private KeyPair KeyPair;
-
-    public static void main(String[] args) throws Exception {
-
-        Authenicate authenicate = new Authenicate();
-
-        byte[] generatedKey = authenicate.generateKey();
-
-        //send generatedKey
-
-        //gets key from other
-
-        //send in the key from other place + fix fingerprint:
-        PublicKey publicKey  = authenicate.reciveKey(generatedKey);
-        byte[] Secret = authenicate.generateSharedSecret(publicKey);
-        SecretKey aesKey = authenicate.makeAESKey(Secret);
-
-
-
-    }
 
     public byte[] generateKey() throws Exception {
 
@@ -75,20 +56,26 @@ public class Authenicate {
         PublicKey publicKey =
                 aliceKeyFactory.generatePublic(KeySpec);
 
+        return publicKey;
+    }
+
+
+
+    public void checkFingerprint(byte[] PublicKeyEncoded) throws Exception{
         MessageDigest sha =
                 MessageDigest.getInstance("SHA-256");
 
         byte[] receivedFingerprint =
                 sha.digest(PublicKeyEncoded);
 
-        //ask frontend for fingerprint that is inserted
-        //byte[] fingerprint = //frontend stuff
+
+        //check state
+
+        //byte[] fingerprint =
 
         //if (!Arrays.equals(fingerprint, receivedFingerprint)){
-            //CANSEL ALL MAN IN THE MIDDLE
+        //CANSEL ALL MAN IN THE MIDDLE
         //}
-
-        return publicKey;
     }
 
 

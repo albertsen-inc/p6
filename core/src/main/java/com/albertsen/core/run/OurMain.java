@@ -19,17 +19,26 @@ public class OurMain {
     }
 
     //interface
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         OurMain main = new OurMain();
         CommonInterface commonInterface = new CommonInterface(main);
+
+        Peer peer = new Peer("localhost","Mathias");
+
+        main.startConnection();
+
+        main.joinConnection(peer);
     }
 
     public ArrayList<Peer> getPeers(){
         return connectionHandler.getPeers();
     }
 
-    public void startConnection(Peer peer){
-        connectionHandler.startConnection(peer);
+    public void startConnection() throws Exception{
+        connectionHandler.startConnection();
+    }
+    public void joinConnection(Peer peer) throws Exception{
+        connectionHandler.joinConnection(peer);
     }
 
     public Folder getFolder(UUID id){

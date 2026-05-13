@@ -1,3 +1,5 @@
+package com.albertsen.core.utilFunctions;
+
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.Cipher;

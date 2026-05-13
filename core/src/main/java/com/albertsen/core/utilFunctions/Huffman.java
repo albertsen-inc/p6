@@ -1,4 +1,4 @@
-/*
+package com.albertsen.core.utilFunctions;/*
   based on huffman.java from https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/Huffman.java.html
   modified to fit this project's needs
   using strings and bitsets instead of stdin and stdout
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Huffman {
     private static final int R = 256;
-    private Huffman() { }
+    public Huffman() { }
 
     public static void main(String[] args)
     {

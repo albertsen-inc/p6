@@ -2,24 +2,17 @@ package com.albertsen.core.dataObjs;
 
 import java.util.UUID;
 
+import javax.crypto.SecretKey;
+
 public class Peer {
     private String Address;
     private String Name;
     private UUID ID;
-    private String Key;
 
     public Peer(String Address, String Name) {
         this.Address = Address;
         this.Name = Name;
         this.ID = UUID.randomUUID();
-    }
-
-    public void setKey(String key){
-        this.Key = key;
-    }
-
-    public String getKey(){
-        return Key;
     }
 
     public String getAddress() {

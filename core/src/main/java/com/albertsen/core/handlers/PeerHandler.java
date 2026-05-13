@@ -57,6 +57,15 @@ public class PeerHandler {
         }
     }
 
+    public Peer getPeer(String address){
+        for (Peer peer: peers) {
+            if (peer.getAddress().equals(address)){
+                return peer;
+            }
+        }
+        return null;
+    }
+
     public void removePeer(Peer peer) {
         synchronized (peers) {
             peers.remove(peer);
