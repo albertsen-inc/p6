@@ -24,8 +24,27 @@ public class ConnectionHandler {
     private PeerHandler peerHandler = new PeerHandler();
     private ArrayList<Connection> connections = new ArrayList<>();
     private final Object popupLock = new Object();
-    public ConnectionHandler() {
 
+    private ServerSocket server;
+
+    public void init(){
+        Thread startConnectionThread = new Thread(() -> {
+
+            try {
+                server = startServer();
+
+
+
+            } catch (Exception e) {
+                System.out.println("server failed to start");
+
+                e.printStackTrace();
+
+            }
+
+        });
+
+        startConnectionThread.start();
     }
 
     public void startConnection() {
@@ -38,88 +57,19 @@ public class ConnectionHandler {
             return;
         }
 
-        Thread startConnectionThread = new Thread(() -> {
 
-            try {
-                ServerSocket server = startServer();
+        Thread clientThread = new Thread(()-> {
 
-                Thread clientThread = new Thread(()-> {
-                    while (!server.isClosed()){
-                        Socket clientSocket = null;
-                        if (server != null)
-                            clientSocket = acceptClient(server);
-                        System.out.println("hey from server");
-
-                        Authenticate authenticate = new Authenticate();
-                        try{
-
-                            byte[] generatedKey = authenticate.generateKey();
-                            if (clientSocket == null){
-                                System.out.println("accept failed");
-                                continue;
-                            }
-                            sendMessage(clientSocket,generatedKey);
-                            byte[] peersKey = receiveBytes(clientSocket);
-
-                            MessageDigest sha =
-                                    MessageDigest.getInstance("SHA-256");
-
-                            byte[] receivedFingerprint =
-                                    sha.digest(peersKey);
-
-                            ConnectionStateHandler.setFingerprint(Arrays.toString(receivedFingerprint));
-
-                            synchronized (popupLock) {
-                                while (ConnectionStateHandler.getPopupState() == Pending) {
-                                    try {
-                                        popupLock.wait();
-                                    } catch (InterruptedException e) {
-                                        Thread.currentThread().interrupt();
-                                        return;
-                                    }
-                                }
-
-                                if (ConnectionStateHandler.getPopupState() == ACCEPT) {
-                                    System.out.println("User accepted");
-                                    // continue connection
-                                } else {
-                                    System.out.println("User denied");
-                                    // cancel connection
-                                }
-                            }
-
-                            PublicKey publicKey  = authenticate.reciveKey(peersKey);
-                            System.out.println(peersKey + "peersKey serverside");
-
-                            byte[] Secret = authenticate.generateSharedSecret(publicKey);
-                            SecretKey aesKey = authenticate.makeAESKey(Secret);
-
-                            connections.add(new Connection(peerHandler.getPeer(findIP(clientSocket)),aesKey));
-
-                        } catch (Exception e) {
-                            System.out.println("failed to generate private and public key.");
-                            throw new RuntimeException(e);
-                        }
-
-
-                    }
-                });
-
-                clientThread.start();
-
-            } catch (Exception e) {
-                System.out.println("server failed to start");
-
-                e.printStackTrace();
-
-            }
+        connectionsThread(server);
 
         });
 
-        startConnectionThread.start();
+        clientThread.start();
         ConnectionStateHandler.connectionOnGoing.set(false);
 
     }
+
+
 
     public void joinConnection(Peer peer){
         if (!ConnectionStateHandler.connectionOnGoing.compareAndSet(false, true)) {
@@ -201,6 +151,71 @@ public class ConnectionHandler {
 
     public ArrayList<Peer> getPeers (){
         return peerHandler.getPeers();
+    }
+
+    public void connectionsThread(ServerSocket server){
+
+            while (!server.isClosed()){
+                Socket clientSocket = null;
+                if (server != null)
+                    clientSocket = acceptClient(server);
+                System.out.println("hey from server");
+
+                Authenticate authenticate = new Authenticate();
+
+                try{
+
+                    byte[] generatedKey = authenticate.generateKey();
+                    if (clientSocket == null){
+                        System.out.println("accept failed");
+                        continue;
+                    }
+                    sendMessage(clientSocket,generatedKey);
+                    byte[] peersKey = receiveBytes(clientSocket);
+
+                    MessageDigest sha =
+                            MessageDigest.getInstance("SHA-256");
+
+                    byte[] receivedFingerprint =
+                            sha.digest(peersKey);
+
+                    ConnectionStateHandler.setFingerprint(Arrays.toString(receivedFingerprint));
+
+                    synchronized (popupLock) {
+                        while (ConnectionStateHandler.getPopupState() == Pending) {
+                            try {
+                                popupLock.wait();
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                return;
+                            }
+                        }
+
+                        if (ConnectionStateHandler.getPopupState() == ACCEPT) {
+                            System.out.println("User accepted");
+                            // continue connection
+                        } else {
+                            System.out.println("User denied");
+                            // cancel connection
+                        }
+                    }
+
+                    PublicKey publicKey  = authenticate.reciveKey(peersKey);
+                    System.out.println(Arrays.toString(peersKey) + "peersKey serverside");
+
+                    byte[] Secret = authenticate.generateSharedSecret(publicKey);
+                    SecretKey aesKey = authenticate.makeAESKey(Secret);
+
+                    connections.add(new Connection(peerHandler.getPeer(findIP(clientSocket)),aesKey));
+
+                } catch (Exception e) {
+                    System.out.println("failed to generate private and public key.");
+                    throw new RuntimeException(e);
+                }
+
+
+            }
+
     }
 
 
