@@ -12,9 +12,12 @@ import com.albertsen.core.handlers.PeerHandler;
 import com.albertsen.core.run.OurMain;
 import com.albertsen.core.dataObjs.Peer;
 import com.albertsen.core.utilFunctions.Logging;
+import com.albertsen.project6.helpers.ConnectionStateHandler;
 import com.albertsen.project6.helpers.FileSetupHelper;
+import com.albertsen.project6.helpers.State;
 import com.albertsen.project6.ui.ConnectScreenView;
 import com.albertsen.project6.ui.MainScreenView;
+import com.albertsen.project6.ui.PopupConnectionUI;
 
 import java.io.File;
 import java.io.IOException;
@@ -114,8 +117,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         connectScreenView.setOnDeviceConnectListener(peer -> {
-            mainScreenView.addDevice(peer);
-            setContentView(mainScreenView);
+            PopupConnectionUI.showConnectionPopup(this, ConnectionStateHandler.getFingerprint(), new PopupConnectionUI.OnActionListener() {
+                @Override
+                public void onAccept() {
+                    mainScreenView.addDevice(peer);
+                    ConnectionStateHandler.setPopupState(State.ACCEPT);
+                    setContentView(mainScreenView);
+                }
+
+                @Override
+                public void onDenied() {
+                    ConnectionStateHandler.setPopupState(State.DENIED);
+                }
+            });
         });
     }
 
