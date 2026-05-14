@@ -1,8 +1,5 @@
 package com.albertsen.core.utilFunctions;
 
-import com.albertsen.core.dataObjs.Peer;
-import com.albertsen.core.handlers.PeerHandler;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Inet4Address;
@@ -70,9 +67,6 @@ public class TCP
 
 		return null;
 	}
-
-
-
 
 
     public static void closeServer(ServerSocket serverSocket)

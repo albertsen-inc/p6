@@ -34,6 +34,7 @@ public class Encryption
     public Encryption(GCMParameterSpec iv)	{this.gcmParameterSpec = iv;}
     public Encryption()				{this.gcmParameterSpec = generateIv();}
     public GCMParameterSpec getGCM()		{return gcmParameterSpec;}
+
     
     public static void main(String[] args)
     {

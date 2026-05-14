@@ -1,17 +1,22 @@
-package com.albertsen.project6.helpers;
+package com.albertsen.core.utilFunctions;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ConnectionStateHandler {
 
     private static State popupState = State.Pending;
     private static String fingerprint;
 
-    public static int getPopupState() {
-        return popupState.ordinal();
+    public static AtomicBoolean connectionOnGoing;
+
+    public static State getPopupState() {
+        return popupState;
     }
 
     public static void setPopupState(State popupState) {
         ConnectionStateHandler.popupState = popupState;
     }
+
 
     public static String getFingerprint() {
         return fingerprint;

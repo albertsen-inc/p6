@@ -1,4 +1,4 @@
-package com.albertsen.project6.helpers;
+package com.albertsen.core.utilFunctions;
 
 public enum State {
     Pending,
