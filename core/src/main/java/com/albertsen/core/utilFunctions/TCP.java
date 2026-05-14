@@ -49,8 +49,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TCP
 {
-	private static final Map<Socket, String> connectionToPeer =
-			new ConcurrentHashMap<>();
 	public static ServerSocket startServer()
 	{
 		try{
@@ -82,10 +80,7 @@ public class TCP
     {
 	try{
 	    Socket clientSocket = serverSocket.accept();
-		String ip = findIP(clientSocket);
-
 	    System.out.println("Client connected!");
-		connectionToPeer.put(clientSocket, ip);
 	    return clientSocket;
 	} catch(IOException e){
 	    System.out.println(e);

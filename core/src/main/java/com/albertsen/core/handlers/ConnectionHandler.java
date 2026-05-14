@@ -24,9 +24,23 @@ public class ConnectionHandler {
     private PeerHandler peerHandler = new PeerHandler();
     private ArrayList<Connection> connections = new ArrayList<>();
     private final Object popupLock = new Object();
-
     private ServerSocket server;
 
+
+
+    //todo edit tcp to not contain connections, but keep them in a connction store, saved in connection handler
+
+    //todo make a server starter.
+    //todo make server stopper
+    //todo make a listner to request to server (start and stop service)
+    //todo make a join request to server.
+
+    //todo handshake
+
+
+
+
+/*
     public void init(){
         Thread startConnectionThread = new Thread(() -> {
 
@@ -219,5 +233,5 @@ public class ConnectionHandler {
     }
 
 
-
+*/
 }

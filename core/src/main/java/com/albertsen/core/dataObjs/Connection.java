@@ -1,5 +1,7 @@
 package com.albertsen.core.dataObjs;
 
+import java.net.Socket;
+
 import javax.crypto.SecretKey;
 
 public class Connection {
@@ -9,9 +11,12 @@ public class Connection {
 
     private Peer peer;
 
-    public Connection (Peer peer, SecretKey key){
+    private Socket socket;
+
+    public Connection (Peer peer, SecretKey key,Socket socket){
         this.peer = peer;
         this.Key = key;
+        this.socket = socket;
 
     }
 
@@ -20,6 +25,10 @@ public class Connection {
     }
 
     public Peer getPeer(){return peer;}
+
+    public Socket getSocket(){
+        return socket;
+    }
 
 
 
