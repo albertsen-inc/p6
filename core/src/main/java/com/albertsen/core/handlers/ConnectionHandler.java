@@ -19,7 +19,8 @@ import java.util.Arrays;
 import javax.crypto.SecretKey;
 
 public class ConnectionHandler {
-    private PeerHandler peerHandler = new PeerHandler();
+    //hack fordi jeg ikke ved hvad jeg laver
+    public PeerHandler peerHandler = new PeerHandler();
     private final ConnectionStore connectionStore = new ConnectionStore();
     private ServerSocket server;
 
@@ -180,6 +181,10 @@ public class ConnectionHandler {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void peerinit(String userName, PeerHandler.InitCallback callback){
+        peerHandler.init(userName, callback);
     }
 
 }

@@ -25,6 +25,10 @@ public class ConnectScreenView extends ScrollView {
 
     private Runnable onBackClick;
     private Runnable onScanClick;
+
+    private Runnable onStartListenerClick;
+
+
     private OnDeviceConnectListener onDeviceConnectListener;
 
     private final ArrayList<Peer> availableDevices = new ArrayList<>();
@@ -106,13 +110,13 @@ public class ConnectScreenView extends ScrollView {
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(dp(16), dp(16), dp(16), dp(16));
 
-        content.addView(createScanButton());
+        content.addView(createStartListnerButton());
         content.addView(createAvailableDevicesCard());
 
         return content;
     }
 
-    private Button createScanButton() {
+    private Button createStartListnerButton() {
         Button button = new Button(context);
         button.setText(R.string.scan_button_text);
         button.setTextSize(18);
@@ -138,6 +142,88 @@ public class ConnectScreenView extends ScrollView {
 
         return button;
     }
+
+    private Button createBroadcastButton() {
+        Button button = new Button(context);
+        button.setText(R.string.scan_button_text);
+        button.setTextSize(18);
+        button.setTypeface(Typeface.DEFAULT_BOLD);
+        button.setTextColor(Color.WHITE);
+        button.setAllCaps(false);
+        button.setBackgroundColor(Color.parseColor("#191B1D"));
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
+        button.setCompoundDrawablePadding(dp(12));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(70)
+        );
+        params.setMargins(0, 0, 0, dp(16));
+        button.setLayoutParams(params);
+
+        button.setOnClickListener(v -> {
+            if (onScanClick != null) {
+                onScanClick.run();
+            }
+        });
+
+        return button;
+    }
+
+    private Button createStartServerButton() {
+        Button button = new Button(context);
+        button.setText(R.string.scan_button_text);
+        button.setTextSize(18);
+        button.setTypeface(Typeface.DEFAULT_BOLD);
+        button.setTextColor(Color.WHITE);
+        button.setAllCaps(false);
+        button.setBackgroundColor(Color.parseColor("#191B1D"));
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
+        button.setCompoundDrawablePadding(dp(12));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(70)
+        );
+        params.setMargins(0, 0, 0, dp(16));
+        button.setLayoutParams(params);
+
+        button.setOnClickListener(v -> {
+            if (onScanClick != null) {
+                onScanClick.run();
+            }
+        });
+
+        return button;
+    }
+
+    private Button createjoinserverButton() {
+        Button button = new Button(context);
+        button.setText(R.string.scan_button_text);
+        button.setTextSize(18);
+        button.setTypeface(Typeface.DEFAULT_BOLD);
+        button.setTextColor(Color.WHITE);
+        button.setAllCaps(false);
+        button.setBackgroundColor(Color.parseColor("#191B1D"));
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
+        button.setCompoundDrawablePadding(dp(12));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(70)
+        );
+        params.setMargins(0, 0, 0, dp(16));
+        button.setLayoutParams(params);
+
+        button.setOnClickListener(v -> {
+            if (onScanClick != null) {
+                onScanClick.run();
+            }
+        });
+
+        return button;
+    }
+
 
     private LinearLayout createAvailableDevicesCard() {
         LinearLayout card = new LinearLayout(context);
@@ -205,6 +291,8 @@ public class ConnectScreenView extends ScrollView {
     public void setOnScanClick(Runnable onScanClick) {
         this.onScanClick = onScanClick;
     }
+
+    public void setOnStartListenerClick(Runnable onStartListenerClick){ this.onStartListenerClick = onStartListenerClick}
 
     public void setOnDeviceConnectListener(OnDeviceConnectListener listener) {
         this.onDeviceConnectListener = listener;

@@ -18,7 +18,6 @@ public class PeerHandler {
     private Listner listner;
     private Broadcast broadcast;
 
-
     public void init(String userName, InitCallback callback){
         Thread tempRun = new Thread(() -> {
             try {

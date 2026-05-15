@@ -5,7 +5,11 @@ import com.albertsen.core.dataObjs.Peer;
 import com.albertsen.core.frontend.CommonInterface;
 import com.albertsen.core.handlers.ConnectionHandler;
 import com.albertsen.core.handlers.FileHandler;
+import com.albertsen.core.handlers.PeerHandler;
+import com.albertsen.core.peerdiscovery.Broadcast;
+import com.albertsen.core.peerdiscovery.Listner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -13,9 +17,13 @@ public class OurMain {
     private ConnectionHandler connectionHandler;
     private FileHandler fileHandler;
 
+    private Listner listner;
+    private Broadcast broadcast;
+
     public OurMain() {
         connectionHandler = new ConnectionHandler();
         fileHandler = new FileHandler();
+
     }
 
     //interface
@@ -25,21 +33,37 @@ public class OurMain {
 
         Peer peer = new Peer("localhost","Mathias");
 
-        main.startConnection();
+        main.startTCPListenerForREQ();
 
-        main.joinConnection(peer);
+        main.joinConnection(peer);j
     }
 
     public ArrayList<Peer> getPeers(){
         return connectionHandler.getPeers();
     }
 
-    public void startConnection() throws Exception{
-        connectionHandler.startConnection();
+    public void startConnectionServer(){
+        connectionHandler.tcpServerStarter();
+    }
+    public void stopConnectionServer(){
+        connectionHandler.tcpServerStopper();
+    }
+
+    public void peerInit(String userName, PeerHandler.InitCallback callback){
+        connectionHandler.peerinit(userName, callback);
+    }
+
+    public void startTCPListenerForREQ() throws Exception{
+        connectionHandler.tcpStartListenerForREQ();
     }
     public void joinConnection(Peer peer) throws Exception{
-        connectionHandler.joinConnection(peer);
+        connectionHandler.tcpJoinAlreadyExsistingServer(peer);
     }
+
+    public void startBroadcast() throws IOException {
+        connectionHandler.peerHandler.broadcastMsg();
+    }
+
 
     public Folder getFolder(UUID id){
         return fileHandler.getFolder(id);

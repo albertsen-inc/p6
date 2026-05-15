@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.albertsen.core.dataObjs.Folder;
+import com.albertsen.core.handlers.ConnectionHandler;
 import com.albertsen.core.handlers.PeerHandler;
 import com.albertsen.core.run.OurMain;
 import com.albertsen.core.dataObjs.Peer;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private OurMain ourMain;
     private MainScreenView mainScreenView;
     private ConnectScreenView connectScreenView;
-
+    private ConnectionHandler connectionHandler;
     private PeerHandler peerHandler;
 
     private final ArrayList<Uri> selectedFiles = new ArrayList<>();
@@ -50,13 +51,16 @@ public class MainActivity extends AppCompatActivity {
 
         ourMain = new OurMain();
 
+
+
+
         File startFolder = FileSetupHelper.createStartFolder(this);
         FileSetupHelper.createTestFiles(startFolder);
 
         ourMain.addFolder(new Folder("StartFolder", startFolder.getAbsolutePath()));
-        peerHandler = new PeerHandler();
 
-        peerHandler.init("per", new PeerHandler.InitCallback() {
+
+        ourMain.peerInit("per", new PeerHandler.InitCallback() {
             @Override
             public void onSuccess(Peer profile) {
                 runOnUiThread(() -> {
@@ -103,17 +107,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void initConnectScreen() {
         connectScreenView = new ConnectScreenView(this);
-
+        boolean tcpListener = false;
         connectScreenView.setOnBackClick(() -> {
             setContentView(mainScreenView);
         });
 
+        connectionHandler.tcpServerStarter();
+
         connectScreenView.setOnScanClick(() -> {
             // Mock discovery
-            connectScreenView.addAvailableDevice(new Peer("192.168.1.103", "Kitchen Tablet"));
-            connectScreenView.addAvailableDevice(new Peer("192.168.1.104", "Bedroom Speaker"));
-            connectScreenView.addAvailableDevice(new Peer("192.168.1.105", "Jane's Laptop"));
-            connectScreenView.addAvailableDevice(new Peer("192.168.1.106", "Gaming Console"));
+            //connectScreenView.addAvailableDevice(new Peer("192.168.1.103", "Kitchen Tablet"));
+            if (!tcpListener) {
+                connectionHandler.tcpStartListenerForREQ();
+            } else {
+                connectionHandler.tcpStopListner();
+            }
+
+
         });
 
         connectScreenView.setOnDeviceConnectListener(peer -> {
