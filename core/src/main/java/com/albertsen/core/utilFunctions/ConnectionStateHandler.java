@@ -9,6 +9,10 @@ public class ConnectionStateHandler {
 
     public static AtomicBoolean connectionOnGoing;
 
+    public static boolean closeListner = false;
+
+    public static final Object popupLock = new Object();
+
     public static State getPopupState() {
         return popupState;
     }

@@ -1,5 +1,10 @@
 package com.albertsen.core.authentication;
 
+import static com.albertsen.core.utilFunctions.State.ACCEPT;
+import static com.albertsen.core.utilFunctions.State.Pending;
+
+import com.albertsen.core.utilFunctions.ConnectionStateHandler;
+
 import javax.crypto.KeyAgreement;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -61,21 +66,35 @@ public class Authenticate {
 
 
 
-    public void checkFingerprint(byte[] PublicKeyEncoded) throws Exception{
+    public boolean checkFingerprint(byte[] PublicKeyEncoded) throws Exception{
         MessageDigest sha =
                 MessageDigest.getInstance("SHA-256");
 
         byte[] receivedFingerprint =
                 sha.digest(PublicKeyEncoded);
 
+        ConnectionStateHandler.setFingerprint(Arrays.toString(receivedFingerprint));
 
-        //check state
+        synchronized (ConnectionStateHandler.popupLock) {
+            while (ConnectionStateHandler.getPopupState() == Pending) {
+                try {
+                    ConnectionStateHandler.popupLock.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return false;
+                }
+            }
 
-        //byte[] fingerprint =
-
-        //if (!Arrays.equals(fingerprint, receivedFingerprint)){
-        //CANSEL ALL MAN IN THE MIDDLE
-        //}
+            if (ConnectionStateHandler.getPopupState() == ACCEPT) {
+                System.out.println("User accepted");
+                return true;
+                // continue connection
+            } else {
+                System.out.println("User denied");
+                return false;
+                // cancel connection
+            }
+        }
     }
 
 
