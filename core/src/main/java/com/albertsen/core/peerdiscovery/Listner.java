@@ -112,7 +112,7 @@ public class Listner {
         System.out.println("Peer discovered:");
         System.out.println("Name: " + name);
         System.out.println("ID: " + id);
-        System.out.println("IP: " + ip);ø
+        System.out.println("IP: " + ip);
 
         peerHandler.addPeer(new Peer(ip,name));
     }

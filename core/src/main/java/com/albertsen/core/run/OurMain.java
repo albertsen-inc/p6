@@ -17,8 +17,6 @@ public class OurMain {
     private ConnectionHandler connectionHandler;
     private FileHandler fileHandler;
 
-    private Listner listner;
-    private Broadcast broadcast;
 
     public OurMain() {
         connectionHandler = new ConnectionHandler();
@@ -35,13 +33,16 @@ public class OurMain {
 
         main.startTCPListenerForREQ();
 
-        main.joinConnection(peer);j
+        main.joinConnection(peer);
     }
 
     public ArrayList<Peer> getPeers(){
         return connectionHandler.getPeers();
     }
 
+    public void stopListningTCP(){
+        connectionHandler.tcpStopListner();
+    }
     public void startConnectionServer(){
         connectionHandler.tcpServerStarter();
     }
@@ -60,8 +61,12 @@ public class OurMain {
         connectionHandler.tcpJoinAlreadyExsistingServer(peer);
     }
 
-    public void startBroadcast() throws IOException {
-        connectionHandler.peerHandler.broadcastMsg();
+    public void startListningForBroadCast(){
+        connectionHandler.startListnerForBroadcast();
+    }
+
+    public void sendBroadcast(){
+        connectionHandler.broadCastMsg();
     }
 
 

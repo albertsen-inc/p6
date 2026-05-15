@@ -11,16 +11,18 @@ import com.albertsen.core.utilFunctions.ConnectionStateHandler;
 import com.albertsen.core.utilFunctions.Logging;
 import com.albertsen.core.utilFunctions.State.*;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.crypto.SecretKey;
 
 public class ConnectionHandler {
-    //hack fordi jeg ikke ved hvad jeg laver
-    public PeerHandler peerHandler = new PeerHandler();
+
+    private PeerHandler peerHandler = new PeerHandler();
     private final ConnectionStore connectionStore = new ConnectionStore();
     private ServerSocket server;
 
@@ -185,6 +187,28 @@ public class ConnectionHandler {
 
     public void peerinit(String userName, PeerHandler.InitCallback callback){
         peerHandler.init(userName, callback);
+    }
+
+    public ArrayList<Peer> getPeers(){
+        return peerHandler.getPeers();
+    }
+
+    public void broadCastMsg(){
+        try {
+            peerHandler.broadcastMsg();
+        } catch (IOException e) {
+            System.out.println("broadcast msg failed in connectionhandler function");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void startListnerForBroadcast(){
+        try {
+            peerHandler.startListner();
+        } catch (IOException e) {
+            System.out.println("broadcast msg failed in connectionhandler function");
+            throw new RuntimeException(e);
+        }
     }
 
 }

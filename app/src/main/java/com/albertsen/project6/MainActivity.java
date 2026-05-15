@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private OurMain ourMain;
     private MainScreenView mainScreenView;
     private ConnectScreenView connectScreenView;
-    private ConnectionHandler connectionHandler;
-    private PeerHandler peerHandler;
 
     private final ArrayList<Uri> selectedFiles = new ArrayList<>();
 
@@ -70,11 +68,7 @@ public class MainActivity extends AppCompatActivity {
                     setContentView(mainScreenView);
                 });
 
-                try {
-                    peerHandler.startListner();
-                } catch (IOException e) {
-                    Logging.log("Failed to start listener", Logging.LogLevel.error);
-                }
+                ourMain.startListningForBroadCast();
             }
 
             @Override
@@ -112,15 +106,19 @@ public class MainActivity extends AppCompatActivity {
             setContentView(mainScreenView);
         });
 
-        connectionHandler.tcpServerStarter();
+        ourMain.startConnectionServer();
 
         connectScreenView.setOnScanClick(() -> {
             // Mock discovery
             //connectScreenView.addAvailableDevice(new Peer("192.168.1.103", "Kitchen Tablet"));
             if (!tcpListener) {
-                connectionHandler.tcpStartListenerForREQ();
+                try {
+                    ourMain.startTCPListenerForREQ();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             } else {
-                connectionHandler.tcpStopListner();
+                ourMain.stopListningTCP();
             }
 
 
