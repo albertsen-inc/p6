@@ -78,6 +78,8 @@ public class PeerHandler {
     public void startListner() throws IOException {
         if (profile != null) {
             listner.startListner();
+        }else {
+            System.out.println("no profile");
         }
     }
 

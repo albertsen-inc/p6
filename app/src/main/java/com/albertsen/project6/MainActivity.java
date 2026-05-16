@@ -113,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         connectScreenView.setBroadcastClick(() -> {
+            System.out.println("before broadcast msg"+ourMain.getPeers().size());
+            ourMain.sendBroadcast();
+            System.out.println("after broadcast msg"+ourMain.getPeers().size());
 
         });
 
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         connectScreenView.setOnStartListenerClick(() -> {
-
+            ourMain.startListningForBroadCast();
         });
 
         connectScreenView.setOnDeviceConnectListener(peer -> {
