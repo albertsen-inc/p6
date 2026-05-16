@@ -13,83 +13,137 @@ import java.util.Collections;
 import java.util.List;
 
 public class PeerHandler {
-    private final List<Peer> peers = Collections.synchronizedList(new ArrayList<>());
+
+    private final List<Peer> peers =
+            Collections.synchronizedList(
+                    new ArrayList<>()
+            );
+
     private Peer profile;
+
     private Listner listner;
     private Broadcast broadcast;
 
-    public void init(String userName, InitCallback callback){
-        Thread tempRun = new Thread(() -> {
-            try {
-                String hostAddress = InetAddress.getLocalHost().getHostAddress();
-                profile = new Peer(hostAddress, userName);
+    public void init(String userName,
+                     InitCallback callback) {
 
-                listner = new Listner(this);
-                broadcast = new Broadcast();
+        try {
 
-                Logging.log("Profile created", Logging.LogLevel.info);
+            String hostAddress =
+                    InetAddress
+                            .getLocalHost()
+                            .getHostAddress();
 
-                if (callback != null) {
-                    callback.onSuccess(profile);
-                }
-            } catch (UnknownHostException e) {
-                Logging.log("Failed to make profile", Logging.LogLevel.error);
-                if (callback != null) {
-                    callback.onError(e);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            profile =
+                    new Peer(hostAddress, userName);
+
+            listner = new Listner(this);
+            broadcast = new Broadcast();
+
+            Logging.log(
+                    "Profile created",
+                    Logging.LogLevel.info
+            );
+
+            if (callback != null) {
+                callback.onSuccess(profile);
             }
-        });
-        tempRun.start();
+
+        } catch (UnknownHostException e) {
+
+            Logging.log(
+                    "Failed to make profile",
+                    Logging.LogLevel.error
+            );
+
+            if (callback != null) {
+                callback.onError(e);
+            }
+
+        } catch (Exception e) {
+
+            if (callback != null) {
+                callback.onError(e);
+            }
+        }
     }
 
     public ArrayList<Peer> getPeers() {
+
         synchronized (peers) {
             return new ArrayList<>(peers);
         }
     }
 
     public void addPeer(Peer peerToBeAdded) {
+
         synchronized (peers) {
             peers.add(peerToBeAdded);
         }
     }
 
-    public Peer getPeer(String address){
-        for (Peer peer: peers) {
-            if (peer.getAddress().equals(address)){
-                return peer;
+    public Peer getPeer(String address) {
+
+        synchronized (peers) {
+
+            for (Peer peer : peers) {
+
+                if (peer.getAddress()
+                        .equals(address)) {
+
+                    return peer;
+                }
             }
         }
+
         return null;
     }
 
     public void removePeer(Peer peer) {
+
         synchronized (peers) {
             peers.remove(peer);
         }
     }
 
     public void broadcastMsg() throws IOException {
-        broadcast.sendBroadcast(getProfile());
+        if (broadcast != null) {
+            Logging.log("Msg has been broadcast", Logging.LogLevel.info);
+            broadcast.sendBroadcast(getProfile());
+        }
     }
 
     public void startListner() throws IOException {
+
         if (profile != null) {
+
             listner.startListner();
-        }else {
-            System.out.println("no profile");
+
+        } else {
+
+            Logging.log(
+                    "No profile",
+                    Logging.LogLevel.error
+            );
         }
     }
 
     public void stopLisnter() {
-        listner.stopLisnter();
+
+        if (listner != null) {
+            listner.stopLisnter();
+        }
     }
 
     public Peer getProfile() {
+
         if (profile == null) {
-            Logging.log("profile dont exsist", Logging.LogLevel.error);
+
+            Logging.log(
+                    "Profile doesn't exist",
+                    Logging.LogLevel.error
+            );
+
             return null;
         }
 
@@ -97,7 +151,9 @@ public class PeerHandler {
     }
 
     public interface InitCallback {
+
         void onSuccess(Peer profile);
+
         void onError(Exception e);
     }
 }

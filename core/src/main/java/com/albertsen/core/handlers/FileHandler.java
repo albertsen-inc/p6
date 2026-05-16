@@ -10,8 +10,7 @@ public class FileHandler {
     private ArrayList<Folder> folders;
 
     public FileHandler() {
-        //TODO get all folders
-        folders = new ArrayList<>();
+        //folders = new ArrayList<>();
 
     }
 
