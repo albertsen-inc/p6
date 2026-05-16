@@ -43,7 +43,7 @@ public class Broadcast {
                         broadcast,
                         8888
                 );
-
+                System.out.println("Sending Packet");
                 socket.send(packet);
             }
         }

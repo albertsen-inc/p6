@@ -68,6 +68,7 @@ public class Listner {
 
         String msg = new String(packet.getData(), 0, packet.getLength());
         System.out.println("Raw: " + msg);
+        System.out.println("got a package");
 
         String[] parts = msg.split("\\|", 5);
 
@@ -101,13 +102,15 @@ public class Listner {
             return;
         }
 
-
-       if (id.equals(peerHandler.getProfile().getID())){
-            System.out.println("youReciveOwnProfile");
+        System.out.println("before if own profile");
+        System.out.println(id + " = " + peerHandler.getProfile().getID() + " " + id.equals(peerHandler.getProfile().getID().toString()));
+        if (id.equals(peerHandler.getProfile().getID().toString())){
+            System.out.println("you Recive Own Profile");
             return;
         }
+        System.out.println("after if own profile");
 
-
+        System.out.println("listener printout");
         System.out.println("Peer discovered:");
         System.out.println("Name: " + name);
         System.out.println("ID: " + id);

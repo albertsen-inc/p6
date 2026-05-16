@@ -88,11 +88,12 @@ public class MainActivity extends AppCompatActivity {
                             initConnectScreen();
 
                             setContentView(mainScreenView);
+                            System.out.println("own profile: " + profile.getName() + "\n" + profile.getID() + "\n" + profile.getAddress());
                         });
 
-                        ourMain.startListningForBroadCast(
-                                null
-                        );
+//                        ourMain.startListningForBroadCast(
+//                                null
+//                        );
                     }
 
                     @Override
