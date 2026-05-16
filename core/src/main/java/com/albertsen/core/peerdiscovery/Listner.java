@@ -1,6 +1,7 @@
 package com.albertsen.core.peerdiscovery;
 import com.albertsen.core.dataObjs.Peer;
 import com.albertsen.core.handlers.PeerHandler;
+import com.albertsen.core.utilFunctions.Logging;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -34,15 +35,15 @@ public class Listner {
                 }
 
             } catch (SocketException e) {
-                System.out.println("Socket stopped.");
+                Logging.log("Socket stopped.", Logging.LogLevel.info);
             } catch (IOException e) {
-                e.printStackTrace();
+                Logging.log(e.getMessage(), Logging.LogLevel.error);
             } finally {
                 if (socket != null && !socket.isClosed()) {
                     socket.close();
                 }
                 isRunning.set(false);
-                System.out.println("Socket closed.");
+                Logging.log("Socket closed.", Logging.LogLevel.info);
             }
         });
 
@@ -65,15 +66,14 @@ public class Listner {
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
         socket.receive(packet);
-
+        Logging.log("got a package", Logging.LogLevel.info);
         String msg = new String(packet.getData(), 0, packet.getLength());
-        System.out.println("Raw: " + msg);
-        System.out.println("got a package");
+        Logging.log("Raw: " + msg, Logging.LogLevel.info);
 
         String[] parts = msg.split("\\|", 5);
 
         if (parts.length != 5) {
-            System.out.println("Invalid format");
+            Logging.log("Invalid format", Logging.LogLevel.warn);
             return;
         }
 
@@ -89,7 +89,7 @@ public class Listner {
         try {
             timestamp = Long.parseLong(parts[3]);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid timestamp");
+            Logging.log("Invalid timestamp", Logging.LogLevel.warn);
             return;
         }
 
@@ -98,24 +98,22 @@ public class Listner {
 
 
         if (replayCache.isReplay(nonce, timestamp, ip)) {
-            System.out.println("Replay detected, ignoring");
+            Logging.log("Replay detected, ignoring", Logging.LogLevel.info);
             return;
         }
 
-        System.out.println("before if own profile");
-        System.out.println(id + " = " + peerHandler.getProfile().getID() + " " + id.equals(peerHandler.getProfile().getID().toString()));
+
         if (id.equals(peerHandler.getProfile().getID().toString())){
-            System.out.println("you Recive Own Profile");
+            Logging.log("you Recive Own Profile", Logging.LogLevel.info);
             return;
         }
-        System.out.println("after if own profile");
 
-        System.out.println("listener printout");
-        System.out.println("Peer discovered:");
-        System.out.println("Name: " + name);
-        System.out.println("ID: " + id);
-        System.out.println("IP: " + ip);
-        System.out.println("peer is beeing made now :D");
+        Logging.log("listener printout", Logging.LogLevel.info);
+        Logging.log("Peer discovered:", Logging.LogLevel.info);
+        Logging.log("Name: " + name, Logging.LogLevel.info);
+        Logging.log("ID: " + id, Logging.LogLevel.info);
+        Logging.log("IP: " + ip, Logging.LogLevel.info);
+        Logging.log("peer is beeing made now :D", Logging.LogLevel.info);
         peerHandler.addPeer(new Peer(ip,name));
     }
 

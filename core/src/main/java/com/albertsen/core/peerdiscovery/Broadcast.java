@@ -1,6 +1,7 @@
 package com.albertsen.core.peerdiscovery;
 
 import com.albertsen.core.dataObjs.Peer;
+import com.albertsen.core.utilFunctions.Logging;
 
 import java.io.IOException;
 import java.net.*;
@@ -43,7 +44,7 @@ public class Broadcast {
                         broadcast,
                         8888
                 );
-                System.out.println("Sending Packet");
+                Logging.log("Sending Packet", Logging.LogLevel.info);
                 socket.send(packet);
             }
         }

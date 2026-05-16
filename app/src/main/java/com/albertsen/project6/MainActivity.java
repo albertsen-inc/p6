@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                             initConnectScreen();
 
                             setContentView(mainScreenView);
-                            System.out.println("own profile: " + profile.getName() + "\n" + profile.getID() + "\n" + profile.getAddress());
+                            Logging.log("own profile: " + profile.getName() + "\n" + profile.getID() + "\n" + profile.getAddress(), Logging.LogLevel.info);
                         });
 
 //                        ourMain.startListningForBroadCast(
@@ -199,8 +199,9 @@ public class MainActivity extends AppCompatActivity {
 
                             runOnUiThread(() -> {
 
-                                System.out.println(
-                                        "Broadcast sent"
+                                Logging.log(
+                                        "Broadcast sent",
+                                        Logging.LogLevel.info
                                 );
                             });
                         }
@@ -210,7 +211,10 @@ public class MainActivity extends AppCompatActivity {
 
                             runOnUiThread(() -> {
 
-                                e.printStackTrace();
+                                Logging.log(
+                                        e.getMessage(),
+                                        Logging.LogLevel.error
+                                );
                             });
                         }
                     }
@@ -250,7 +254,10 @@ public class MainActivity extends AppCompatActivity {
 
                                     runOnUiThread(() -> {
 
-                                        e.printStackTrace();
+                                        Logging.log(
+                                                e.getMessage(),
+                                                Logging.LogLevel.error
+                                        );
                                     });
                                 }
                             }
