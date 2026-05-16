@@ -25,9 +25,10 @@ public class ConnectScreenView extends ScrollView {
 
     private Runnable onBackClick;
     private Runnable onScanClick;
-
     private Runnable onStartListenerClick;
-
+    private Runnable JoinServerClick;
+    private Runnable StartServerClick;
+    private Runnable BroadcastClick;
 
     private OnDeviceConnectListener onDeviceConnectListener;
 
@@ -110,21 +111,25 @@ public class ConnectScreenView extends ScrollView {
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(dp(16), dp(16), dp(16), dp(16));
 
-        content.addView(createStartListnerButton());
+        content.addView(createScanButton());
+        content.addView(createStartListenerButton());
+        content.addView(createBroadcastButton());
+        content.addView(createStartServerButton());
+        content.addView(createJoinServerButton());
         content.addView(createAvailableDevicesCard());
 
         return content;
     }
 
-    private Button createStartListnerButton() {
+    private Button createButtonTemplate(String text, int iconResId, Runnable onClick) {
         Button button = new Button(context);
-        button.setText(R.string.scan_button_text);
+        button.setText(text);
         button.setTextSize(18);
         button.setTypeface(Typeface.DEFAULT_BOLD);
         button.setTextColor(Color.WHITE);
         button.setAllCaps(false);
         button.setBackgroundColor(Color.parseColor("#191B1D"));
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
+        button.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
         button.setCompoundDrawablePadding(dp(12));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -135,93 +140,42 @@ public class ConnectScreenView extends ScrollView {
         button.setLayoutParams(params);
 
         button.setOnClickListener(v -> {
-            if (onScanClick != null) {
-                onScanClick.run();
+            if (onClick != null) {
+                onClick.run();
             }
         });
 
         return button;
+    }
+
+    private Button createScanButton() {
+        return createButtonTemplate(context.getString(R.string.scan_button_text), R.drawable.ic_search, () -> {
+            if (onScanClick != null) onScanClick.run();
+        });
+    }
+
+    private Button createStartListenerButton() {
+        return createButtonTemplate("Start Listener", R.drawable.ic_search, () -> {
+            if (onStartListenerClick != null) onStartListenerClick.run();
+        });
     }
 
     private Button createBroadcastButton() {
-        Button button = new Button(context);
-        button.setText(R.string.scan_button_text);
-        button.setTextSize(18);
-        button.setTypeface(Typeface.DEFAULT_BOLD);
-        button.setTextColor(Color.WHITE);
-        button.setAllCaps(false);
-        button.setBackgroundColor(Color.parseColor("#191B1D"));
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
-        button.setCompoundDrawablePadding(dp(12));
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(70)
-        );
-        params.setMargins(0, 0, 0, dp(16));
-        button.setLayoutParams(params);
-
-        button.setOnClickListener(v -> {
-            if (onScanClick != null) {
-                onScanClick.run();
-            }
+        return createButtonTemplate("Broadcast Discovery", R.drawable.ic_add, () -> {
+            if (BroadcastClick != null) BroadcastClick.run();
         });
-
-        return button;
     }
 
     private Button createStartServerButton() {
-        Button button = new Button(context);
-        button.setText(R.string.scan_button_text);
-        button.setTextSize(18);
-        button.setTypeface(Typeface.DEFAULT_BOLD);
-        button.setTextColor(Color.WHITE);
-        button.setAllCaps(false);
-        button.setBackgroundColor(Color.parseColor("#191B1D"));
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
-        button.setCompoundDrawablePadding(dp(12));
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(70)
-        );
-        params.setMargins(0, 0, 0, dp(16));
-        button.setLayoutParams(params);
-
-        button.setOnClickListener(v -> {
-            if (onScanClick != null) {
-                onScanClick.run();
-            }
+        return createButtonTemplate("Start Server", R.drawable.ic_add, () -> {
+            if (StartServerClick != null) StartServerClick.run();
         });
-
-        return button;
     }
 
-    private Button createjoinserverButton() {
-        Button button = new Button(context);
-        button.setText(R.string.scan_button_text);
-        button.setTextSize(18);
-        button.setTypeface(Typeface.DEFAULT_BOLD);
-        button.setTextColor(Color.WHITE);
-        button.setAllCaps(false);
-        button.setBackgroundColor(Color.parseColor("#191B1D"));
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_search, 0, 0, 0);
-        button.setCompoundDrawablePadding(dp(12));
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(70)
-        );
-        params.setMargins(0, 0, 0, dp(16));
-        button.setLayoutParams(params);
-
-        button.setOnClickListener(v -> {
-            if (onScanClick != null) {
-                onScanClick.run();
-            }
+    private Button createJoinServerButton() {
+        return createButtonTemplate("Join Server", R.drawable.ic_search, () -> {
+            if (JoinServerClick != null) JoinServerClick.run();
         });
-
-        return button;
     }
 
 
@@ -292,10 +246,21 @@ public class ConnectScreenView extends ScrollView {
         this.onScanClick = onScanClick;
     }
 
-    public void setOnStartListenerClick(Runnable createStartListnerButton){ this.onStartListenerClick = onStartListenerClick;}
-    public void setOnStartListenerClick(Runnable createjoinserverButton){ this.onStartListenerClick = onStartListenerClick;};
-    public void setOnStartListenerClick(Runnable createStartServerButton){ this.onStartListenerClick = onStartListenerClick;};
-    public void setOnStartListenerClick(Runnable createBroadcastButton){ this.onStartListenerClick = onStartListenerClick;};
+    public void setOnStartListenerClick(Runnable onStartListenerClick){ 
+        this.onStartListenerClick = onStartListenerClick;
+    }
+    
+    public void setJoinServerClick(Runnable JoinServerClick){ 
+        this.JoinServerClick = JoinServerClick;
+    }
+    
+    public void setStartServerClick(Runnable StartServerClick){ 
+        this.StartServerClick = StartServerClick;
+    }
+    
+    public void setBroadcastClick(Runnable BroadcastClick){ 
+        this.BroadcastClick = BroadcastClick;
+    }
 
     public void setOnDeviceConnectListener(OnDeviceConnectListener listener) {
         this.onDeviceConnectListener = listener;

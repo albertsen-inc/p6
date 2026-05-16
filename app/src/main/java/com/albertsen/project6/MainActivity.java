@@ -109,18 +109,22 @@ public class MainActivity extends AppCompatActivity {
         ourMain.startConnectionServer();
 
         connectScreenView.setOnScanClick(() -> {
-            // Mock discovery
-            //connectScreenView.addAvailableDevice(new Peer("192.168.1.103", "Kitchen Tablet"));
-            if (!tcpListener) {
-                try {
-                    ourMain.startTCPListenerForREQ();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                ourMain.stopListningTCP();
-            }
 
+        });
+
+        connectScreenView.setBroadcastClick(() -> {
+
+        });
+
+        connectScreenView.setJoinServerClick(() -> {
+
+        });
+
+        connectScreenView.setStartServerClick(() -> {
+
+        });
+
+        connectScreenView.setOnStartListenerClick(() -> {
 
         });
 
