@@ -292,7 +292,10 @@ public class ConnectScreenView extends ScrollView {
         this.onScanClick = onScanClick;
     }
 
-    public void setOnStartListenerClick(Runnable onStartListenerClick){ this.onStartListenerClick = onStartListenerClick}
+    public void setOnStartListenerClick(Runnable createStartListnerButton){ this.onStartListenerClick = onStartListenerClick;}
+    public void setOnStartListenerClick(Runnable createjoinserverButton){ this.onStartListenerClick = onStartListenerClick;};
+    public void setOnStartListenerClick(Runnable createStartServerButton){ this.onStartListenerClick = onStartListenerClick;};
+    public void setOnStartListenerClick(Runnable createBroadcastButton){ this.onStartListenerClick = onStartListenerClick;};
 
     public void setOnDeviceConnectListener(OnDeviceConnectListener listener) {
         this.onDeviceConnectListener = listener;

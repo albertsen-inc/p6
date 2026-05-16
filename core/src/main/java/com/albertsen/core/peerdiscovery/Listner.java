@@ -13,7 +13,6 @@ public class Listner {
 
     private static final AtomicBoolean isRunning = new AtomicBoolean(false);
     private volatile DatagramSocket socket;
-    private Thread thread;
     private final ReplayCache replayCache = new ReplayCache();
     private PeerHandler peerHandler;
 
@@ -27,18 +26,18 @@ public class Listner {
             return;
         }
 
-        thread = new Thread(() -> {
+        Thread thread = new Thread(() -> {
             try {
                 socket = new DatagramSocket(8888);
-                while (isRunning.get()){
+                while (isRunning.get()) {
                     listner(socket);
                 }
 
-            }catch (SocketException e) {
+            } catch (SocketException e) {
                 System.out.println("Socket stopped.");
             } catch (IOException e) {
                 e.printStackTrace();
-            }finally {
+            } finally {
                 if (socket != null && !socket.isClosed()) {
                     socket.close();
                 }
