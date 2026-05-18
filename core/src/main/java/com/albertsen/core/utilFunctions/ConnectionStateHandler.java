@@ -7,7 +7,7 @@ public class ConnectionStateHandler {
     private static State popupState = State.Pending;
     private static String fingerprint;
 
-    public static AtomicBoolean connectionOnGoing;
+    public static AtomicBoolean connectionOnGoing = new AtomicBoolean(false);
 
     public static boolean closeListner = false;
 

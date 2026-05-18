@@ -5,6 +5,7 @@ import com.albertsen.core.dataObjs.Peer;
 import com.albertsen.core.handlers.ConnectionHandler;
 import com.albertsen.core.handlers.FileHandler;
 import com.albertsen.core.handlers.PeerHandler;
+import com.albertsen.core.utilFunctions.Logging;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -15,21 +16,15 @@ public class OurMain {
 
     private final ConnectionHandler connectionHandler;
     private final FileHandler fileHandler;
-
-    // background thread pool
     private final ExecutorService executor =
             Executors.newCachedThreadPool();
 
     public OurMain() {
 
-        // initialize normally
         connectionHandler = new ConnectionHandler();
         fileHandler = new FileHandler();
     }
 
-    // =========================
-    // CALLBACKS
-    // =========================
 
     public interface SimpleCallback {
         void onComplete();
@@ -37,9 +32,6 @@ public class OurMain {
         void onError(Exception e);
     }
 
-    // =========================
-    // GETTERS
-    // =========================
 
     public ArrayList<Peer> getPeers() {
         return connectionHandler.getPeers();
@@ -53,69 +45,35 @@ public class OurMain {
         return fileHandler.getFolders();
     }
 
-    // =========================
-    // THREAD FUNCTIONS
-    // =========================
 
-    public void stopListningTCP(SimpleCallback callback) {
+    public void startConnectionServer() {
 
         executor.execute(() -> {
 
             try {
 
-                connectionHandler.tcpStopListner();
+                connectionHandler.startTcpServer();
 
-                if (callback != null) {
-                    callback.onComplete();
-                }
 
             } catch (Exception e) {
-
-                if (callback != null) {
-                    callback.onError(e);
-                }
+                Logging.log("failed to start tcpserver", Logging.LogLevel.error);
             }
         });
     }
 
-    public void startConnectionServer(SimpleCallback callback) {
+    public void stopConnectionServer() {
 
         executor.execute(() -> {
 
             try {
 
-                connectionHandler.tcpServerStarter();
+                connectionHandler.stopTcpServer();
 
-                if (callback != null) {
-                    callback.onComplete();
-                }
+
 
             } catch (Exception e) {
 
-                if (callback != null) {
-                    callback.onError(e);
-                }
-            }
-        });
-    }
-
-    public void stopConnectionServer(SimpleCallback callback) {
-
-        executor.execute(() -> {
-
-            try {
-
-                connectionHandler.tcpServerStopper();
-
-                if (callback != null) {
-                    callback.onComplete();
-                }
-
-            } catch (Exception e) {
-
-                if (callback != null) {
-                    callback.onError(e);
-                }
+                Logging.log("failed to stop tcpserver", Logging.LogLevel.error);
             }
         });
     }
@@ -128,52 +86,26 @@ public class OurMain {
         );
     }
 
-    public void startTCPListenerForREQ(SimpleCallback callback) {
 
-        executor.execute(() -> {
-
-            try {
-
-                connectionHandler.tcpStartListenerForREQ();
-
-                if (callback != null) {
-                    callback.onComplete();
-                }
-
-            } catch (Exception e) {
-
-                if (callback != null) {
-                    callback.onError(e);
-                }
-            }
-        });
-    }
-
-    public void joinConnection(Peer peer,
-                               SimpleCallback callback) {
+    public void joinConnection(Peer peer) {
 
         executor.execute(() -> {
 
             try {
 
                 connectionHandler
-                        .tcpJoinAlreadyExsistingServer(peer);
+                        .joinTcpServer(peer);
 
-                if (callback != null) {
-                    callback.onComplete();
-                }
+
 
             } catch (Exception e) {
 
-                if (callback != null) {
-                    callback.onError(e);
-                }
+                Logging.log("failed to start server", Logging.LogLevel.error);
             }
         });
     }
 
     public void startListningForBroadCast(
-            SimpleCallback callback
     ) {
 
         executor.execute(() -> {
@@ -183,20 +115,15 @@ public class OurMain {
                 connectionHandler
                         .startListnerForBroadcast();
 
-                if (callback != null) {
-                    callback.onComplete();
-                }
+
 
             } catch (Exception e) {
-
-                if (callback != null) {
-                    callback.onError(e);
-                }
+                Logging.log("failed to start broadcastListner", Logging.LogLevel.error);
             }
         });
     }
 
-    public void sendBroadcast(SimpleCallback callback) {
+    public void sendBroadcast() {
 
         executor.execute(() -> {
 
@@ -204,21 +131,16 @@ public class OurMain {
 
                 connectionHandler.broadCastMsg();
 
-                if (callback != null) {
-                    callback.onComplete();
-                }
+
 
             } catch (Exception e) {
 
-                if (callback != null) {
-                    callback.onError(e);
-                }
+                Logging.log("failed to send Broadcast", Logging.LogLevel.error);
             }
         });
     }
 
-    public void addFolder(Folder folder,
-                          SimpleCallback callback) {
+    public void addFolder(Folder folder) {
 
         executor.execute(() -> {
 
@@ -226,15 +148,11 @@ public class OurMain {
 
                 fileHandler.addFolder(folder);
 
-                if (callback != null) {
-                    callback.onComplete();
-                }
+
 
             } catch (Exception e) {
 
-                if (callback != null) {
-                    callback.onError(e);
-                }
+                Logging.log("failed to add folder", Logging.LogLevel.error);
             }
         });
     }

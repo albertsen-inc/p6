@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         ourMain = new OurMain();
+        ourMain.startConnectionServer();
 
         File startFolder =
                 FileSetupHelper.createStartFolder(this);
@@ -69,9 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 new Folder(
                         "StartFolder",
                         startFolder.getAbsolutePath()
-                ),
-
-                null
+                )
         );
 
         ourMain.peerInit(
@@ -88,12 +87,18 @@ public class MainActivity extends AppCompatActivity {
                             initConnectScreen();
 
                             setContentView(mainScreenView);
-                            Logging.log("own profile: " + profile.getName() + "\n" + profile.getID() + "\n" + profile.getAddress(), Logging.LogLevel.info);
-                        });
 
-//                        ourMain.startListningForBroadCast(
-//                                null
-//                        );
+                            Logging.log(
+                                    "own profile: "
+                                            + profile.getName()
+                                            + "\n"
+                                            + profile.getID()
+                                            + "\n"
+                                            + profile.getAddress(),
+
+                                    Logging.LogLevel.info
+                            );
+                        });
                     }
 
                     @Override
@@ -111,6 +116,14 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        ourMain.stopConnectionServer();
+    }
+
     private void initMainScreen() {
 
         mainScreenView = new MainScreenView(this);
@@ -126,12 +139,25 @@ public class MainActivity extends AppCompatActivity {
         mainScreenView.setOnSendFilesClick(() -> {
 
             if (selectedFiles.isEmpty()) {
+
+                Logging.log(
+                        "No files selected",
+                        Logging.LogLevel.warn
+                );
+
                 return;
             }
+
+            Logging.log(
+                    selectedFiles.size()
+                            + " files ready to send",
+                    Logging.LogLevel.info
+            );
 
             // send logic later
         });
 
+        // test devices
         mainScreenView.addDevice(
                 new Peer(
                         "192.168.1.101",
@@ -156,115 +182,26 @@ public class MainActivity extends AppCompatActivity {
             setContentView(mainScreenView);
         });
 
-        ourMain.startConnectionServer(
-                new OurMain.SimpleCallback() {
-
-                    @Override
-                    public void onComplete() {
-
-                        runOnUiThread(() -> {
-
-                            Logging.log(
-                                    "Server started",
-                                    Logging.LogLevel.info
-                            );
-                        });
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                        runOnUiThread(() -> {
-
-                            Logging.log(
-                                    e.getMessage(),
-                                    Logging.LogLevel.error
-                            );
-                        });
-                    }
-                }
-        );
-
         connectScreenView.setOnScanClick(() -> {
-            connectScreenView.addAvailableDevice(ourMain.getPeers());
-        });
 
-        connectScreenView.setBroadcastClick(() -> {
-
-            ourMain.sendBroadcast(
-                    new OurMain.SimpleCallback() {
-
-                        @Override
-                        public void onComplete() {
-
-                            runOnUiThread(() -> {
-
-                                Logging.log(
-                                        "Broadcast sent",
-                                        Logging.LogLevel.info
-                                );
-                            });
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                            runOnUiThread(() -> {
-
-                                Logging.log(
-                                        e.getMessage(),
-                                        Logging.LogLevel.error
-                                );
-                            });
-                        }
-                    }
+            connectScreenView.addAvailableDevice(
+                    ourMain.getPeers()
             );
         });
 
-        connectScreenView.setJoinServerClick(() -> {
-
-        });
-
-        connectScreenView.setStartServerClick(() -> {
-
-        });
+        connectScreenView.setBroadcastClick(
+                ourMain::sendBroadcast
+        );
 
 
+       /* connectScreenView.setStartServerClick(
+                ourMain::startConnectionServer
+        );*/
 
-        connectScreenView
-                .setOnStartListenerClick(() -> {
+        connectScreenView.setOnStartListenerClick(
+                ourMain::startListningForBroadCast
+        );
 
-                    ourMain.startListningForBroadCast(
-                            new OurMain.SimpleCallback() {
-
-                                @Override
-                                public void onComplete() {
-
-                                    runOnUiThread(() -> {
-
-                                        Logging.log(
-                                                "Listener started",
-                                                Logging.LogLevel.info
-                                        );
-                                    });
-                                }
-
-                                @Override
-                                public void onError(
-                                        Exception e
-                                ) {
-
-                                    runOnUiThread(() -> {
-
-                                        Logging.log(
-                                                e.getMessage(),
-                                                Logging.LogLevel.error
-                                        );
-                                    });
-                                }
-                            }
-                    );
-                });
         connectScreenView
                 .setOnDeviceConnectListener(peer -> {
 
