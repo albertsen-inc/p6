@@ -78,6 +78,7 @@ public class PeerHandler {
     public void addPeer(Peer peerToBeAdded) {
 
         synchronized (peers) {
+            Logging.log("added peer: " + peerToBeAdded.getID(), Logging.LogLevel.info);
             peers.add(peerToBeAdded);
         }
     }

@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         connectScreenView.setOnScanClick(() -> {
-
+            connectScreenView.addAvailableDevice(ourMain.getPeers());
         });
 
         connectScreenView.setBroadcastClick(() -> {
@@ -229,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+
+
         connectScreenView
                 .setOnStartListenerClick(() -> {
 
@@ -263,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                     );
                 });
-
         connectScreenView
                 .setOnDeviceConnectListener(peer -> {
 

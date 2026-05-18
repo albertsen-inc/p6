@@ -11,6 +11,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.albertsen.core.dataObjs.Peer;
+import com.albertsen.core.run.OurMain;
+import com.albertsen.core.utilFunctions.Logging;
 import com.albertsen.project6.R;
 
 import java.util.ArrayList;
@@ -214,18 +216,21 @@ public class ConnectScreenView extends ScrollView {
         return card;
     }
 
-    public void addAvailableDevice(Peer peer) {
-        if (isAlreadyAvailable(peer)) return;
-        
-        availableDevices.add(peer);
-        AvailableDeviceCardView card = new AvailableDeviceCardView(context, peer, () -> {
-            if (onDeviceConnectListener != null) {
-                onDeviceConnectListener.onConnect(peer);
+    public void addAvailableDevice(ArrayList<Peer> peers) {
+        for (Peer peer : peers) {
+            if (isAlreadyAvailable(peer)) return;
+
+            availableDevices.add(peer);
+            AvailableDeviceCardView card = new AvailableDeviceCardView(context, peer, () -> {
+                if (onDeviceConnectListener != null) {
+                    onDeviceConnectListener.onConnect(peer);
+                }
+            });
+            availableDevicesContainer.addView(card);
+            updateAvailableDevicesTitle();
             }
-        });
-        availableDevicesContainer.addView(card);
-        updateAvailableDevicesTitle();
-    }
+        }
+
 
     private boolean isAlreadyAvailable(Peer newPeer) {
         for (Peer p : availableDevices) {
